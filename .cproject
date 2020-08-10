@@ -39,7 +39,7 @@
 									<listOptionValue builtIn="false" value="../Libraries/STM32F4xx_StdPeriph_Driver/inc"/>
 									<listOptionValue builtIn="false" value="../Utilities/Common"/>
 									<listOptionValue builtIn="false" value="../Utilities/STM32F429I-Discovery"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MySTM32F4/Libraries/STM32F4_Base_Driver}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mySTM32F4/Libraries/STM32F4_Base_Driver}&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.1751554007" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
@@ -57,7 +57,7 @@
 									<listOptionValue builtIn="false" value="../Libraries/STM32F4xx_StdPeriph_Driver/inc"/>
 									<listOptionValue builtIn="false" value="../Utilities/Common"/>
 									<listOptionValue builtIn="false" value="../Utilities/STM32F429I-Discovery"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MySTM32F4/Libraries/STM32F4_Base_Driver}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mySTM32F4/Libraries/STM32F4_Base_Driver}&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.2089122518" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.56603677" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F429ZI" valueType="enumerated"/>
@@ -91,7 +91,7 @@
 									<listOptionValue builtIn="false" value="../Libraries/STM32F4xx_StdPeriph_Driver/inc"/>
 									<listOptionValue builtIn="false" value="../Utilities/Common"/>
 									<listOptionValue builtIn="false" value="../Utilities/STM32F429I-Discovery"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MySTM32F4/Libraries/STM32F4_Base_Driver}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/mySTM32F4/Libraries/STM32F4_Base_Driver}&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.343888742" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.1734932381" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F429ZI" valueType="enumerated"/>
@@ -121,9 +121,15 @@
 							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.807242853" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.atollic.truestudio.exe.debug.672417466.1289304671" name="stm32f429i_discovery_i2c_ee.h" rcbsApplicability="disable" resourcePath="Utilities/STM32F429I-Discovery/stm32f429i_discovery_i2c_ee.h" toolsToInvoke=""/>
+					<fileInfo id="com.atollic.truestudio.exe.debug.672417466.994248811" name="stm32f429i_discovery_i2c_ee.c" rcbsApplicability="disable" resourcePath="Utilities/STM32F429I-Discovery/stm32f429i_discovery_i2c_ee.c" toolsToInvoke="com.atollic.truestudio.exe.debug.toolchain.gcc.1419648889.1108481387">
+						<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1419648889.1108481387" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.1419648889">
+							<inputType id="com.atollic.truestudio.gcc.input.2040852040" superClass="com.atollic.truestudio.gcc.input"/>
+						</tool>
+					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Utilities"/>
+						<entry excluding="STM32F429I-Discovery/stm32f429i_discovery_i2c_ee.c|STM32F429I-Discovery/stm32f429i_discovery_i2c_ee.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Utilities"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>

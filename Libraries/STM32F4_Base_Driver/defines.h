@@ -31,9 +31,25 @@
 /* Put your global defines for all libraries here used in your project */
 #define STM32F429_DISCOVERY
 #define TM_DISCO_STM32F429_DISCOVERY
+#define STM32F429_439xx
 
+// Timer Configuration
 #define TM_DELAY_TIM            TIM2
 #define TM_DELAY_TIM_IRQ        TIM2_IRQn
 #define TM_DELAY_TIM_IRQ_HANDLER    TIM2_IRQHandler
+
+// SPI Configuration
+#define USE_SPI5
+//Options can be overwriten in defines.h file
+#define TM_SPI5_PRESCALER    SPI_BaudRatePrescaler_32
+//Specify datasize
+#define TM_SPI5_DATASIZE     SPI_DataSize_8b
+//Specify which bit is first
+#define TM_SPI5_FIRSTBIT     SPI_FirstBit_MSB
+//Mode, master or slave
+#define TM_SPI5_MASTERSLAVE SPI_Mode_Master
+//Specify mode of operation, clock polarity and clock phase
+//Modes 0 to 3 are possible
+#define TM_SPI5_MODE        TM_SPI_Mode_0
 
 #endif
