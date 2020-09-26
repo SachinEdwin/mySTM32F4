@@ -2,11 +2,11 @@
  * @author  Tilen Majerle
  * @email   tilen@majerle.eu
  * @website http://stm32f4-discovery.com
- * @link    http://stm32f4-discovery.com/2014/06/library-18-ili9341-ltdc-stm32f429-discovery/
- * @version v1.4
+ * @link    http://stm32f4-discovery.com/2014/04/library-08-ili9341-lcd-on-stm32f429-discovery-board/
+ * @version v1.3
  * @ide     Keil uVision
  * @license GNU GPL v3
- * @brief   ILI9341 library for LCD on STM32F429 Discovery using LTDC and external ram
+ * @brief   ILI9341 library for STM32F4xx with SPI communication, without LTDC hardware
  *	
 @verbatim
    ----------------------------------------------------------------------
@@ -27,8 +27,8 @@
    ----------------------------------------------------------------------
 @endverbatim
  */
-#ifndef TM_ILI9341_LTDC_H
-#define TM_ILI9341_LTDC_H 140
+#ifndef TM_ILI9341_H
+#define TM_ILI9341_H 130
 
 /* C++ detection */
 #ifdef __cplusplus
@@ -41,43 +41,73 @@ extern "C" {
  */
 
 /**
- * @defgroup TM_ILI9341_LTDC
- * @brief    ILI9341 library for LCD on STM32F429 Discovery, with LTDC hardware support - http://stm32f4-discovery.com/2014/06/library-18-ili9341-ltdc-stm32f429-discovery/
+ * @defgroup TM_ILI9341
+ * @brief    ILI9341 library for STM32F4xx with SPI communication, without LTDC hardware - http://stm32f4-discovery.com/2014/04/library-08-ili9341-lcd-on-stm32f429-discovery-board/
  * @{
  *
- * @note     Only works for STM32F4(2/3)9-Discovery because it has LTDC inside and external memory for data
- * 
- * \par Pinout on STM32F429-Discovery board
+ * This driver works for all STM32F4xx series with built in SPI peripheral.
+ *	
+ * \par Default pinout
  *
 @verbatim
-PA3  <-> B5    | PB0  <-> R3 | PC6  <-> HSYNC | PD3  <-> G7 | PF10 <-> ENABLE | PG6  <-> R7     |
-PA4  <-> VSYNC | PB1  <-> R6 | PC7  <-> G6    | PD6  <-> B2 |                 | PG7  <-> DOTCLK |
-PA6  <-> G2    | PB8  <-> B6 | PC10 <-> R2    |             |                 | PB10 <-> G3     |
-PA11 <-> R4    | PB9  <-> B7 |                |             |                 | PG11 <-> B3     |
-PA12 <-> R5    | PB10 <-> G4 |                |             |                 | PG12 <-> B4     |
-               | PB11 <-> G5 |                |             |                 |                 |
+ILI9341      STM32F4xx    DESCRIPTION
+		
+SDO (MISO    PF8          Output from LCD for SPI.	Not used, can be left
+LED          3.3V         Backlight
+SCK          PF7          SPI clock
+SDI (MOSI)   PF9          SPI master output
+WRX or D/C   PD13         Data/Command register
+RESET        PD12         Reset LCD
+CS           PC2          Chip select for SPI
+GND          GND          Ground
+VCC          3.3V         Positive power supply
+@endverbatim
+ *		
+ * All pins can be changed in your defines.h file
+ *		
+@verbatim
+//Default SPI used is SPI5. Check my SPI library for other pinouts
+#define ILI9341_SPI           SPI5
+#define ILI9341_SPI_PINS      TM_SPI_PinsPack_1
+		
+//Default CS pin. Edit this in your defines.h file
+#define ILI9341_CS_PORT       GPIOC
+#define ILI9341_CS_PIN        GPIO_PIN_2
+		
+//Default D/C (or WRX) pin. Edit this in your defines.h file
+#define ILI9341_WRX_PORT      GPIOD
+#define ILI9341_WRX_PIN       GPIO_PIN_13
+@endverbatim
+ *
+ * Reset pin can be disabled, if you need GPIOs for other purpose.
+ * To disable RESET pin, add line below to defines.h file
+ * If you disable pin, then set LCD's RESET pin to VCC.
+ *	
+@verbatim
+//Disable RESET pin
+#define ILI9341_USE_RST_PIN			0
+@endverbatim
+ *		
+ * But if you want to use RESET pin, you can change its settings in defines.h file
+ *	
+@verbatim
+//Default RESET pin. Edit this in your defines.h file
+#define ILI9341_RST_PORT			GPIOD
+#define ILI9341_RST_PIN				GPIO_PIN_12
 @endverbatim
  *
  * \par Changelog
  *
 @verbatim
- Version 1.4
+ Version 1.3
+  - June 06, 2015
+  - Added support for SPI DMA for faster refreshing
+ 
+ Version 1.2
   - March 14, 2015
   - Added support for new GPIO system
   - Added functions TM_ILI9341_DisplayOff() and TM_ILI9341_DisplayOn()
  
- Version 1.3
-  - January 21, 2015,
-  - Added support for rounded rectangles
-	
- Version 1.2
-  - December 27, 2014
-  - Added transparent option for strings and chars
-	
- Version 1.1
-  - August 07, 2014
-  - Added scroll down and scroll up features
-
  Version 1.0
   - First release
 @endverbatim
@@ -88,26 +118,28 @@ PA12 <-> R5    | PB10 <-> G4 |                |             |                 | 
  - STM32F4xx
  - STM32F4xx RCC
  - STM32F4xx GPIO
- - STM32F4xx LTDC
+ - STM32F4xx SPI
  - defines.h
  - TM SPI
+ - TM DMA
+ - TM SPI DMA
  - TM FONTS
- - TM SDRAM
  - TM GPIO
 @endverbatim
  */
+
 #include "stm32f4xx.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_gpio.h"
-#include "stm32f4xx_ltdc.h"
 #include "defines.h"
-#include "tm_stm32f4_spi.h"
 #include "tm_stm32f4_fonts.h"
-#include "tm_stm32f4_sdram.h"
 #include "tm_stm32f4_gpio.h"
+#include "tm_stm32f4_spi.h"
+#include "tm_stm32f4_dma.h"
+#include "tm_stm32f4_spi_dma.h"
 
 /**
- * @defgroup TM_ILI9341_LTDC_Macros
+ * @defgroup TM_ILI9341_Macros
  * @brief    Library defines
  * @{
  */
@@ -116,32 +148,43 @@ PA12 <-> R5    | PB10 <-> G4 |                |             |                 | 
  * @brief  This SPI pins are used on STM32F429-Discovery board
  */
 #ifndef ILI9341_SPI
-#define ILI9341_SPI 				SPI5
-#define ILI9341_SPI_PINS			TM_SPI_PinsPack_1
+#define ILI9341_SPI           SPI5
+#define ILI9341_SPI_PINS      TM_SPI_PinsPack_1
 #endif
 
 /**
  * @brief  CS PIN for SPI, used as on STM32F429-Discovery board
  */
 #ifndef ILI9341_CS_PIN
-#define ILI9341_CS_PORT				GPIOC
-#define ILI9341_CS_PIN				GPIO_PIN_2
+#define ILI9341_CS_PORT       GPIOC
+#define ILI9341_CS_PIN        GPIO_PIN_2
 #endif
 
 /**
  * @brief  WRX PIN for data/command, used as on STM32F429-Discovery board
  */
 #ifndef ILI9341_WRX_PIN
-#define ILI9341_WRX_PORT			GPIOD
-#define ILI9341_WRX_PIN				GPIO_PIN_13
+#define ILI9341_WRX_PORT      GPIOD
+#define ILI9341_WRX_PIN       GPIO_PIN_13
 #endif
 
 /**
- * @brief  Colors for LCD in RGB565 format
+ * @brief  RESET for LCD
  */
+#ifndef ILI9341_RST_PIN
+#define ILI9341_RST_PORT      GPIOD
+#define ILI9341_RST_PIN       GPIO_PIN_12
+#endif
+
+/* LCD settings */
+#define ILI9341_WIDTH        240
+#define ILI9341_HEIGHT       320
+#define ILI9341_PIXEL        76800
+
+/* Colors */
 #define ILI9341_COLOR_WHITE			0xFFFF
 #define ILI9341_COLOR_BLACK			0x0000
-#define ILI9341_COLOR_RED			0xF800
+#define ILI9341_COLOR_RED       0xF800
 #define ILI9341_COLOR_GREEN			0x07E0
 #define ILI9341_COLOR_GREEN2		0xB723
 #define ILI9341_COLOR_BLUE			0x001F
@@ -153,11 +196,7 @@ PA12 <-> R5    | PB10 <-> G4 |                |             |                 | 
 #define ILI9341_COLOR_GRAY			0x7BEF
 #define ILI9341_COLOR_BROWN			0xBBCA
 
-/** 
- * @brief  Transparent background, only for chars and strings
- * @note   Use this as background when you use @ref TM_ILI9341_Putc or @ref TM_ILI9341_Puts
- *         if you want transparent background
- */
+/* Transparent background, only for strings and chars */
 #define ILI9341_TRANSPARENT			0x80000000
 
 /**
@@ -165,10 +204,11 @@ PA12 <-> R5    | PB10 <-> G4 |                |             |                 | 
  */
  
 /**
- * @defgroup TM_ILI9341_LTDC_Typedefs
+ * @defgroup TM_ILI9341_Typedefs
  * @brief    Library Typedefs
  * @{
  */
+
 
 /**
  * @brief  Possible orientations for LCD
@@ -185,10 +225,11 @@ typedef enum {
  */
 
 /**
- * @defgroup TM_ILI9341_LTDC_Functions
+ * @defgroup TM_ILI9341_Functions
  * @brief    Library Functions
  * @{
  */
+
 /**
  * @brief  Initializes ILI9341 LCD with LTDC peripheral
  *         It also initializes external SDRAM
@@ -288,30 +329,6 @@ void TM_ILI9341_DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1
 void TM_ILI9341_DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint32_t color);
 
 /**
- * @brief  Draws rounded rectangle on LCD
- * @param  x0: X coordinate of top left point
- * @param  y0: Y coordinate of top left point
- * @param  x1: X coordinate of bottom right point
- * @param  y1: Y coordinate of bottom right point
- * @param  r: Radius for corners
- * @param  color: Rectangle color
- * @retval None
- */
-void TM_ILI9341_DrawRoundedRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t r, uint32_t color);
-
-/**
- * @brief  Draws filled rounded rectangle on LCD
- * @param  x0: X coordinate of top left point
- * @param  y0: Y coordinate of top left point
- * @param  x1: X coordinate of bottom right point
- * @param  y1: Y coordinate of bottom right point
- * @param  r: Radius for corners
- * @param  color: Rectangle color
- * @retval None
- */
-void TM_ILI9341_DrawFilledRoundedRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t r, uint32_t color);
-
-/**
  * @brief  Draws circle on LCD
  * @param  x0: X coordinate of center circle point
  * @param  y0: Y coordinate of center circle point
@@ -330,57 +347,6 @@ void TM_ILI9341_DrawCircle(int16_t x0, int16_t y0, int16_t r, uint32_t color);
  * @retval None
  */
 void TM_ILI9341_DrawFilledCircle(int16_t x0, int16_t y0, int16_t r, uint32_t color);
-
-/**
- * @brief  Sets layer 2 to currently active layer
- * @param  None
- * @retval None
- */
-void TM_ILI9341_SetLayer1(void);
-
-/**
- * @brief  Sets layer 2 to currently active layer
- * @param  None
- * @retval None
- */
-void TM_ILI9341_SetLayer2(void);
-
-/**
- * @brief  Sets layer 1 opacity
- * @param  opacity: 0 to 255, 0 is no opacity, 255 is no transparency
- * @retval None
- */
-void TM_ILI9341_SetLayer1Opacity(uint8_t opacity);
-
-/**
- * @brief  Sets layer 2 opacity
- * @param  opacity: 0 to 255, 0 is no opacity, 255 is no transparency
- * @retval None
- */
-void TM_ILI9341_SetLayer2Opacity(uint8_t opacity);
-
-/**
- * @brief  This changes current active layer
- *         It sets transparency to 0 and 255 depends on which layer is selected
- 
- * @note   If current layer is Layer 1, then now will be Layer 2 and vice versa
- * @retval None
- */
-void TM_ILI9341_ChangeLayers(void);
-
-/**
- * @brief  Copies content of layer 2 to layer 1
- * @note   It will do a memory copy from layer 2 to layer 1
- * @retval None
- */
-void TM_ILI9341_Layer2To1(void);
-
-/**
- * @brief  Copies content of layer 1 to layer 2
- * @note   It will do a memory copy from layer 1 to layer 2
- * @retval None
- */
-void TM_ILI9341_Layer1To2(void);
 
 /**
  * @brief   Enables display
@@ -415,3 +381,4 @@ void TM_ILI9341_DisplayOff(void);
 #endif
 
 #endif
+

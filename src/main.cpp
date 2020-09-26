@@ -32,6 +32,8 @@ SOFTWARE.
 #include "tm_stm32f4_disco.h"
 #include "tm_stm32f4_gpio.h"
 #include "tm_stm32f4_delay.h"
+#include "tm_stm32f4_ili9341.h"
+#include "tm_stm32f4_fonts.h"
 
 /* Private macro */
 /* Private variables */
@@ -49,41 +51,59 @@ SOFTWARE.
 */
 int main(void)
 {
-	/* Initialize system */
+	/* Initialize system
 	SystemInit();
 
-	/* Initialize delay */
+	 Initialize delay
 	TM_DELAY_Init();
 
-	/* Reset counter to 0 */
+	 Reset counter to 0
 	TM_DELAY_SetTime(0);
 
-	/* Initialize leds on board */
-	/* Set pins as output */
+	 Initialize leds on board
+	 Set pins as output
 	TM_GPIO_Init(TM_DISCO_LED_PORT, LED_ALL, TM_GPIO_Mode_OUT, TM_GPIO_OType_PP, TM_GPIO_PuPd_NOPULL, TM_GPIO_Speed_High);
 
-	/* Turn leds off */
+	 Turn leds off
 	TM_DISCO_LedOff(LED_ALL);
 
-	/* Set pin as input */
-	TM_GPIO_Init(TM_DISCO_BUTTON_PORT, TM_DISCO_BUTTON_PIN, TM_GPIO_Mode_IN, TM_GPIO_OType_PP, TM_DISCO_BUTTON_PULL, TM_GPIO_Speed_Low);
+	 Set pin as input
+	TM_GPIO_Init(TM_DISCO_BUTTON_PORT, TM_DISCO_BUTTON_PIN, TM_GPIO_Mode_IN, TM_GPIO_OType_PP, TM_DISCO_BUTTON_PULL, TM_GPIO_Speed_Low);*/
 
-  /* Infinite loop */
-  while (1)
-  {
-	  /* If button pressed */
-	 if (TM_DISCO_ButtonPressed()) {
-		 /* Turn on leds */
-		 TM_DISCO_LedOn(LED_RED | LED_GREEN);
-	 } else {
-		 /* Turn off leds */
-		 TM_DISCO_LedOff(LED_RED | LED_GREEN);
-	 }
-  }
+
+	 //Initialize system
+	    SystemInit();
+
+	    //Initialize ILI9341
+	    TM_ILI9341_Init();
+	    //Rotate LCD for 90 degrees
+	    TM_ILI9341_Rotate(TM_ILI9341_Orientation_Landscape_2);
+	    //FIll lcd with color
+	    TM_ILI9341_Fill(ILI9341_COLOR_MAGENTA);
+	    //Draw white circle
+	    TM_ILI9341_DrawCircle(60, 60, 40, ILI9341_COLOR_GREEN);
+	    //Draw red filled circle
+	    TM_ILI9341_DrawFilledCircle(60, 60, 35, ILI9341_COLOR_RED);
+	    //Draw blue rectangle
+	    TM_ILI9341_DrawRectangle(120, 20, 220, 100, ILI9341_COLOR_BLUE);
+	    //Draw black filled rectangle
+	    TM_ILI9341_DrawFilledRectangle(130, 30, 210, 90, ILI9341_COLOR_BLACK);
+	    //Draw line with custom color 0x0005
+	    TM_ILI9341_DrawLine(10, 120, 310, 120, 0x0005);
+
+	    //Put string with black foreground color and blue background with 11x18px font
+	    TM_ILI9341_Puts(65, 130, "STM32F4 Discovery", &TM_Font_11x18, ILI9341_COLOR_BLACK, ILI9341_COLOR_BLUE2);
+	    //Put string with black foreground color and blue background with 11x18px font
+	    TM_ILI9341_Puts(60, 150, "ILI9341 LCD Module", &TM_Font_11x18, ILI9341_COLOR_BLACK, ILI9341_COLOR_BLUE2);
+	    //Put string with black foreground color and red background with 11x18px font
+	    TM_ILI9341_Puts(245, 225, "majerle.eu", &TM_Font_7x10, ILI9341_COLOR_BLACK, ILI9341_COLOR_ORANGE);
+
+	    while (1) {
+
+	    }
+
+
 }
-
-
-
 
 /*
  * Callback used by stm324xg_eval_i2c_ee.c.
