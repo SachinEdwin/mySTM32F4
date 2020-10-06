@@ -84,7 +84,8 @@ void SysTick_Handler(void) {
 	}
 }
 
-void TM_DELAY_Init(void) {	
+void TM_DELAY_Init(void)
+{
 #if defined(TM_DELAY_TIM)
 	TM_DELAY_INT_InitTIM();
 #else
