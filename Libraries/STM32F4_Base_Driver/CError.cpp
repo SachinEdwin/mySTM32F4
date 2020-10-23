@@ -26,13 +26,12 @@ void CError::ErrorHandler()
 
 void CError::NoErrorHandler()
 {
-	while(1)
+	for (uint8_t loop = 0;  loop < MAX_LOOP; loop++)
 	{
-		if (TM_DELAY_Time() >= 500)
-		{
-			TM_DELAY_SetTime(0);
-			TM_DISCO_LedToggle(LED_GREEN);
-		}
+		TM_DISCO_LedToggle(LED_GREEN);
+		Delayms(100);
+		TM_DISCO_LedOff(LED_GREEN);
+		Delayms(100);
 	}
 }
 

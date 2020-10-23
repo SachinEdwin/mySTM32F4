@@ -11,6 +11,8 @@
 #include "tm_stm32f4_disco.h"
 #include "tm_stm32f4_delay.h"
 
+#define MAX_LOOP 3
+
 typedef enum
 {
   NoError = 0,

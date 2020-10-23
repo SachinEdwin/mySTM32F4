@@ -59,14 +59,15 @@ private:
 
 	void Test();
 	void RegisterModuleCallback(const cb_t &cb, const EN_ModuleCallbackID_t id);
+	void DeRegisterModuleCallback();
 
 	// add all the modules which needs to be initialized below
 	ST_ModuleInit mst_moduleInit[MaxModules]  =
 	{
-			{EN_ModuleCallbackID_t::ModuleSystemInit, &CModulesInit::SysInit},
-			{EN_ModuleCallbackID_t::ModuleLEDInit, &CModulesInit::LEDInit},
-			{EN_ModuleCallbackID_t::ModuleTimerInit, &CModulesInit::TimerInit}
-	};;
+		{EN_ModuleCallbackID_t::ModuleSystemInit, &CModulesInit::SysInit},
+		{EN_ModuleCallbackID_t::ModuleLEDInit, &CModulesInit::LEDInit},
+		{EN_ModuleCallbackID_t::ModuleTimerInit, &CModulesInit::TimerInit}
+	};
 	/// List of callback functions.
 	std::vector<ST_ModuleInit> m_callbacks;
 

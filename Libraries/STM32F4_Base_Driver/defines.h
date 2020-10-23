@@ -56,15 +56,22 @@
 #define ILI9341_SPI                 SPI5 //OR something similar
 #define ILI9341_SPI_PINS            TM_SPI_PinsPack_1
 
-/* Change custom CS, DC and RESET pins */
-/* CS pin */
+// Change custom CS, DC and RESET pins
+ //CS pin
 #define ILI9341_CS_PORT                GPIOC
 #define ILI9341_CS_PIN                GPIO_PIN_2
-/* WRX or DC pin */
+// WRX or DC pin
 #define ILI9341_WRX_PORT            GPIOD
 #define ILI9341_WRX_PIN                GPIO_PIN_13
-/* RST pin */
+// RST pin
 #define ILI9341_RST_PORT            GPIOD
 #define ILI9341_RST_PIN                GPIO_PIN_12
+
+/* Uncomment, if you need to set custom pulse length for 0° rotation */
+#define SERVO_MICROS_MIN    1000
+
+/* Maximal pulse length */
+/* Uncomment, if you need to set custom pulse length for 180° rotation */
+#define SERVO_MICROS_MAX    2000
 
 #endif

@@ -27,6 +27,15 @@ void CModulesInit::RegisterModuleCallback(const cb_t &fp_CB, const EN_ModuleCall
 
 }
 
+void CModulesInit::DeRegisterModuleCallback()
+{
+	if(m_callbacks.size()!= 0)
+	{
+		// remove callback to end of callback list
+		this->m_callbacks.pop_back();
+	}
+}
+
 /// Call all the registered callback.
 void CModulesInit::Run() const
 {
@@ -45,7 +54,6 @@ void CModulesInit::Run() const
 
 	if(ModuleInitialisationOK == en_errorCode)
 	{
-		TM_DELAY_SetTime(0);
 		CError::NoErrorHandler();
 	}
 }
@@ -74,7 +82,6 @@ En_Error CModulesInit::TimerInit()
 
 	//Reset counter to 0
 	TM_DELAY_SetTime(0);
-
 	return ModuleInitialisationOK;
 }
 
