@@ -28,6 +28,8 @@
 #ifndef TM_DEFINES_H
 #define TM_DEFINES_H
 
+#include <stdbool.h>
+
 /* Put your global defines for all libraries here used in your project */
 #define STM32F429_DISCOVERY
 #define TM_DISCO_STM32F429_DISCOVERY
@@ -66,12 +68,5 @@
 // RST pin
 #define ILI9341_RST_PORT            GPIOD
 #define ILI9341_RST_PIN                GPIO_PIN_12
-
-/* Uncomment, if you need to set custom pulse length for 0° rotation */
-#define SERVO_MICROS_MIN    1000
-
-/* Maximal pulse length */
-/* Uncomment, if you need to set custom pulse length for 180° rotation */
-#define SERVO_MICROS_MAX    2000
 
 #endif
