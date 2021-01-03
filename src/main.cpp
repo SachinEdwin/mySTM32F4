@@ -29,19 +29,13 @@ SOFTWARE.
 
 /* Includes */
 #include "stm32f4xx.h"
-#include "tm_stm32f4_disco.h"
-#include "tm_stm32f4_gpio.h"
-#include "tm_stm32f4_delay.h"
-#include "tm_stm32f4_ili9341.h"
-#include "tm_stm32f4_fonts.h"
-
-/* Private macro */
-/* Private variables */
-/* Private function prototypes */
-/* Private functions */
-
-
-
+#include "defines.h"
+#include "CModulesInit.h"
+//testing
+#include <CCircularBuffer.h>
+#include <CUART.h>
+//#define TRANSMITTER
+#define RECEIVER
 /**
 **===========================================================================
 **
@@ -51,68 +45,38 @@ SOFTWARE.
 */
 int main(void)
 {
-	/* Initialize system
-	SystemInit();
+	CModulesInit test;
+	test.Run();
 
-	 Initialize delay
-	TM_DELAY_Init();
+	CUART uart;
+    uint8_t length = 0;
+    uint8_t u8_rxBuffer[10] = {1,2,3,4,5,6,7,8,9,10};
 
-	 Reset counter to 0
-	TM_DELAY_SetTime(0);
+	while (1)
+	{
+#ifdef TRANSMITTER
+		uart.UARTWrite(&u8_rxBuffer[0], 5);
+		TM_DISCO_LedToggle(LED_GREEN);
+		Delayms(100);
+		TM_DISCO_LedToggle(LED_GREEN);
 
-	 Initialize leds on board
-	 Set pins as output
-	TM_GPIO_Init(TM_DISCO_LED_PORT, LED_ALL, TM_GPIO_Mode_OUT, TM_GPIO_OType_PP, TM_GPIO_PuPd_NOPULL, TM_GPIO_Speed_High);
+		Delayms(2000);
+#endif
 
-	 Turn leds off
-	TM_DISCO_LedOff(LED_ALL);
+#ifdef RECEIVER
+		length = uart.UARTIsDataAvailable();
 
-	 Set pin as input
-	TM_GPIO_Init(TM_DISCO_BUTTON_PORT, TM_DISCO_BUTTON_PIN, TM_GPIO_Mode_IN, TM_GPIO_OType_PP, TM_DISCO_BUTTON_PULL, TM_GPIO_Speed_Low);*/
+		if(length > 0)
+		{
+			// read the UART contents
+			uart.UARTRead(&u8_rxBuffer[0], length);
+			TM_DISCO_LedToggle(LED_GREEN);
+			Delayms(100);
+			TM_DISCO_LedToggle(LED_GREEN);
+			uart.UARTWrite(&u8_rxBuffer[0], length);
 
-
-	 //Initialize system
-	    SystemInit();
-
-	    //Initialize ILI9341
-	    TM_ILI9341_Init();
-	    //Rotate LCD for 90 degrees
-	    TM_ILI9341_Rotate(TM_ILI9341_Orientation_Landscape_2);
-	    //FIll lcd with color
-	    TM_ILI9341_Fill(ILI9341_COLOR_MAGENTA);
-	    //Draw white circle
-	    TM_ILI9341_DrawCircle(60, 60, 40, ILI9341_COLOR_GREEN);
-	    //Draw red filled circle
-	    TM_ILI9341_DrawFilledCircle(60, 60, 35, ILI9341_COLOR_RED);
-	    //Draw blue rectangle
-	    TM_ILI9341_DrawRectangle(120, 20, 220, 100, ILI9341_COLOR_BLUE);
-	    //Draw black filled rectangle
-	    TM_ILI9341_DrawFilledRectangle(130, 30, 210, 90, ILI9341_COLOR_BLACK);
-	    //Draw line with custom color 0x0005
-	    TM_ILI9341_DrawLine(10, 120, 310, 120, 0x0005);
-
-	    //Put string with black foreground color and blue background with 11x18px font
-	    TM_ILI9341_Puts(65, 130, "STM32F4 Discovery", &TM_Font_11x18, ILI9341_COLOR_BLACK, ILI9341_COLOR_BLUE2);
-	    //Put string with black foreground color and blue background with 11x18px font
-	    TM_ILI9341_Puts(60, 150, "ILI9341 LCD Module", &TM_Font_11x18, ILI9341_COLOR_BLACK, ILI9341_COLOR_BLUE2);
-	    //Put string with black foreground color and red background with 11x18px font
-	    TM_ILI9341_Puts(245, 225, "majerle.eu", &TM_Font_7x10, ILI9341_COLOR_BLACK, ILI9341_COLOR_ORANGE);
-
-	    while (1) {
-
-	    }
-
-
+		}
+#endif
+	}
 }
 
-/*
- * Callback used by stm324xg_eval_i2c_ee.c.
- * Refer to stm324xg_eval_i2c_ee.h for more info.
- */
-extern "C" uint32_t sEE_TIMEOUT_UserCallback(void)
-{
-  /* TODO, implement your code here */
-  while (1)
-  {
-  }
-}

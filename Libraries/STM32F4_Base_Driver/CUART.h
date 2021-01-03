@@ -9,7 +9,7 @@
 #define STM32F4_BASE_DRIVER_CUART_H_
 
 #include "tm_stm32f4_usart.h"
-#include "CCircularBuffer.h"
+#include "CRingbuffer.h"
 
 typedef enum
 {
@@ -23,7 +23,7 @@ public:
 	CUART();
 	void UARTWrite(uint8_t *data, uint8_t size = 1);
 	void UARTRead(uint8_t *pu8_data, uint8_t size);
-	uint8_t UARTIsDataAvailable();
+	uint16_t UARTIsDataAvailable();
 	void UARTDeInit();
 	virtual ~CUART();
 };

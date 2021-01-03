@@ -17,6 +17,7 @@
  * |----------------------------------------------------------------------
  */
 #include "tm_stm32f4_usart.h"
+#include "tm_stm32f4_disco.h"
 
 /**
  * @brief Internal USART struct
@@ -92,7 +93,9 @@ static void TM_USART_INT_Init(
 	uint32_t WordLength
 );
 
-void TM_USART_Init(USART_TypeDef* USARTx, TM_USART_PinsPack_t pinspack, uint32_t baudrate) {
+void TM_USART_Init(USART_TypeDef* USARTx, TM_USART_PinsPack_t pinspack, uint32_t baudrate)
+{
+
 #ifdef USE_USART1
 	if (USARTx == USART1) {
 		TM_USART_INT_Init(USART1, pinspack, baudrate, TM_USART1_HARDWARE_FLOW_CONTROL, TM_USART1_MODE, TM_USART1_PARITY, TM_USART1_STOP_BITS, TM_USART1_WORD_LENGTH);
@@ -188,20 +191,33 @@ uint8_t TM_USART_Gets(USART_TypeDef* USARTx, uint8_t *pu8_data, uint8_t u8_size)
 		*pu8_data++ = data;
 	}
 
+	// should we reset the pointer?? here
+	TM_FlushRxBuffer(stp_rx_buffer);
+
 	/* Return number of characters in buffer */
 	return u8_size;
 }
 
+uint16_t TM_USART_DataAvailable()
+{
+	return TM_CircularBufSize(stp_rx_buffer);
+}
 void TM_USART_Send(USART_TypeDef* USARTx, uint8_t* pu8_data, uint8_t u8_count)
 {
 	for (uint8_t i = 0; i < u8_count; i++)
 	{
 		// we add data to Tx buffer
-		TM_CircularBufPut(stp_tx_buffer, *pu8_data++);
+		//TM_CircularBufPut(stp_tx_buffer, *pu8_data++);
+		/* Wait to be ready, buffer empty */
+		USART_WAIT(USARTx);
+		/* Send data */
+		USARTx->DR = (uint16_t)(*pu8_data++);
+		/* Wait to be ready, buffer empty */
+		USART_WAIT(USARTx);
 	}
 
 	/* Enable TX interrupt */
-	USARTx->CR1 |= USART_CR1_TXEIE;
+	//USARTx->CR1 |= USART_CR1_TXEIE;
 }
 
 
@@ -405,18 +421,18 @@ void TM_UART8_InitPins(TM_USART_PinsPack_t pinspack) {
 #endif
 
 #ifdef USE_USART1
-void USART1_IRQHandler(void) {
+void USART1_IRQHandler(void)
+{
 
 	// Check if interrupt was because data is received
 	if (USART1->SR & USART_SR_RXNE)
 	{
 		TM_CircularBufPut(stp_rx_buffer, (uint8_t)USART1->DR);
 	}
-	else if(USART1->SR & USART_SR_TXE)
+	/*else if(USART1->SR & USART_SR_TXE)
 	{
 		// reset the transmission interrupt
 		USART1->CR1 &= ~(USART_CR1_TXEIE);
-
 		uint8_t u8_data = 0;
 
 		uint8_t size = (uint8_t)TM_CircularBufSize(stp_tx_buffer);
@@ -439,7 +455,7 @@ void USART1_IRQHandler(void) {
 	else
 	{
 		// TODO: do nothing for now
-	}
+	}*/
 }
 #endif
 
@@ -506,6 +522,40 @@ static void TM_USART_INT_Init(
 	USARTx->CR1 |= USART_CR1_UE;
 }
 
+void TM_USARTCircularBuffInit()
+{
+
+/*	ST_circular_buf_t st_tx_buffer;
+	ST_circular_buf_t st_rx_buffer;
+
+	// Tx handle
+	st_tx_buffer.b_full = false;
+	st_tx_buffer.u16_head = 0;
+	st_tx_buffer.u16_max = CB_TX_RX_BUFFER_SIZE;
+	st_tx_buffer.u16_tail = 0;
+	for (uint8_t i = 0; i < CB_TX_RX_BUFFER_SIZE; i++)
+	{
+		st_tx_buffer.pu8_buffer[i] = 0;
+	}
+
+
+	// Rx Handle
+	st_rx_buffer.b_full = false;
+	st_rx_buffer.u16_head = 0;
+	st_rx_buffer.u16_max = CB_TX_RX_BUFFER_SIZE;
+	st_rx_buffer.u16_tail = 0;
+	for (uint8_t i = 0; i < CB_TX_RX_BUFFER_SIZE; i++)
+	{
+		st_rx_buffer.pu8_buffer[i] = 0;
+	}*/
+
+	st_tx_buffer.u16_max = CB_TX_RX_BUFFER_SIZE;
+	st_rx_buffer.u16_max = CB_TX_RX_BUFFER_SIZE;
+	stp_rx_buffer = &st_rx_buffer;
+	stp_tx_buffer = &st_tx_buffer;
+}
+
+/*
 // TODO: should be made private
 void TM_USARTCircularBuffInit()
 {
@@ -629,4 +679,5 @@ void TM_FlushTxBuffer()
 		stp_tx_buffer->pu8_buffer[reset] = 0;
 	}
 }
+*/
 

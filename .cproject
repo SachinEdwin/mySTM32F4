@@ -123,8 +123,9 @@
 						</toolChain>
 					</folderInfo>
 					<fileInfo id="com.atollic.truestudio.exe.debug.672417466.1289304671" name="stm32f429i_discovery_i2c_ee.h" rcbsApplicability="disable" resourcePath="Utilities/STM32F429I-Discovery/stm32f429i_discovery_i2c_ee.h" toolsToInvoke=""/>
+					<fileInfo id="com.atollic.truestudio.exe.debug.672417466.48816784" name="tm_stm32f4_ili9341.h" rcbsApplicability="disable" resourcePath="Libraries/STM32F4_Base_Driver/tm_stm32f4_ili9341.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
+						<entry excluding="STM32F4_Base_Driver/tm_stm32f4_ili9341.h|STM32F4_Base_Driver/tm_stm32f4_ili9341.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Libraries"/>
 						<entry excluding="STM32F429I-Discovery/stm32f429i_discovery_i2c_ee.c|STM32F429I-Discovery/stm32f429i_discovery_i2c_ee.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Utilities"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>

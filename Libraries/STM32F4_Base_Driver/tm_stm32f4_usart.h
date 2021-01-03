@@ -207,6 +207,7 @@ UART8        |PE1    PE0     |-      -       |-      -
 #include "attributes.h"
 #include "defines.h"
 #include "tm_stm32f4_gpio.h"
+#include "CRingbuffer.h"
 
 /* F405/407/415/417/F446 */
 #if defined (STM32F40_41xxx) || defined(STM32F446xx)
@@ -235,17 +236,17 @@ UART8        |PE1    PE0     |-      -       |-      -
 #define USE_USART6
 #endif
 
-#define CB_TX_RX_BUFFER_SIZE 32
+//#define CB_TX_RX_BUFFER_SIZE 32
 
-// The hidden definition of our circular buffer structure
+/*// The hidden definition of our circular buffer structure
 typedef struct
 {
+    bool b_full;
 	uint8_t pu8_buffer[CB_TX_RX_BUFFER_SIZE];
 	uint16_t u16_head;
 	uint16_t u16_tail;
 	uint16_t u16_max; //of the buffer
-	bool b_full;
-}ST_circular_buf_t;
+}ST_circular_buf_t;*/
 /**
  * @defgroup TM_USART_Typedefs
  * @brief    USART Typedefs
@@ -313,7 +314,11 @@ typedef enum {
  /**
  * @}
  */
-
+/**
+ * @brief  Wait till USART finishes transmission
+ */
+#define USART_TXEMPTY(USARTx)               ((USARTx)->SR & USART_FLAG_TXE)
+#define USART_WAIT(USARTx)                  do { while (!USART_TXEMPTY(USARTx)); } while (0)
 /**
  * @defgroup TM_USART_Functions
  * @brief    USART Functions
@@ -457,8 +462,10 @@ __weak void TM_UART8_ReceiveHandler(uint8_t c);
  *
  */
 
+uint16_t TM_USART_DataAvailable();
+void TM_USARTCircularBuffInit();
 
-/* Initialize the circular buffer */
+/* Initialize the circular buffer
 void TM_USARTCircularBuffInit();
 /// Returns 1 on success, 0 if buffer is full
 uint8_t TM_CircularBufPut(ST_circular_buf_t *p_handle, uint8_t u8_data);
@@ -486,7 +493,8 @@ uint16_t TM_CircularBufSize(ST_circular_buf_t *p_handle);
 uint16_t TM_IsDataAvailable();
 
 void TM_FlushRxBuffer();
-void TM_FlushTxBuffer();
+void TM_FlushTxBuffer();*/
+
 
 /* C++ detection */
 #ifdef __cplusplus
