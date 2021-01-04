@@ -200,6 +200,7 @@ typedef enum {
  * @brief  Supported SPI modules 
  */
 #define USE_SPI1
+/*
 #define USE_SPI2
 #define USE_SPI3
 #ifdef SPI4
@@ -217,6 +218,7 @@ typedef enum {
 #else
 #warning "SPI6 undefined. Please update library with STD drivers from ST.com"
 #endif
+*/
 
 //----- SPI1 options start -------
 //Options can be overwriten in defines.h file
@@ -567,6 +569,10 @@ void TM_SPI_ReadMulti16(SPI_TypeDef* SPIx, uint16_t* dataIn, uint16_t dummy, uin
  * @note   With __weak parameter to prevent link errors if not defined by user
  */
 void TM_SPI_InitCustomPinsCallback(SPI_TypeDef* SPIx, uint16_t AlternateFunction);
+
+
+
+void TM_SPI_DeInit(SPI_TypeDef* SPIx);
 
 /**
  * @}

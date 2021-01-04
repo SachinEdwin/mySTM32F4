@@ -447,6 +447,8 @@ static void TM_SPIx_Init(SPI_TypeDef* SPIx, TM_SPI_PinsPack_t pinspack, TM_SPI_M
 	
 	/* Enable SPI */
 	SPIx->CR1 |= SPI_CR1_SPE;
+
+	//TODO: activate interrupt
 }
 
 /* Private functions */
@@ -572,3 +574,8 @@ void TM_SPI6_INT_InitPins(TM_SPI_PinsPack_t pinspack) {
 }
 #endif
 
+void TM_SPI_DeInit(SPI_TypeDef* SPIx)
+{
+	/* Disable the selected SPI peripheral */
+	 SPIx->CR1 &= (uint16_t)~((uint16_t)SPI_CR1_SPE);
+}
