@@ -111,14 +111,14 @@ Degrees (pulse_length) = (pulse_length – MIN) * 180 / (MAX – MIN)
  * @brief  Minimal pulse length for servo in micros
  */
 #ifndef SERVO_MICROS_MIN
-#define SERVO_MICROS_MIN	500
+#define SERVO_MICROS_MIN	1000
 #endif
 
 /**
  * @brief  Maximal pulse length for servo in micros
  */
 #ifndef SERVO_MICROS_MAX
-#define SERVO_MICROS_MAX	2500
+#define SERVO_MICROS_MAX	2000
 #endif
 	
 /**

@@ -45,13 +45,13 @@ TM_SERVO_Result_t TM_SERVO_SetDegrees(TM_SERVO_t* ServoStruct, float degrees) {
 	uint16_t micros;
 	
 	/* Filter */
-	if (degrees < 0 || degrees > 180) {
+	if (degrees < 0 || degrees > 360) {
 		/* Return error */
 		return TM_SERVO_Result_Error;
 	}
 	
 	/* Generate micros value from degrees */
-	micros = (SERVO_MICROS_MAX - SERVO_MICROS_MIN) * degrees / 180 + SERVO_MICROS_MIN;
+	micros = (SERVO_MICROS_MAX - SERVO_MICROS_MIN) * degrees / 360 + SERVO_MICROS_MIN;
 	
 	/* Save micros and degrees values to struct */
 	ServoStruct->Micros = micros;
@@ -104,7 +104,7 @@ void SE_Servo_MotorStepsInDegrees(TM_SERVO_t* ServoStruct, float steps, TM_SERVO
 
 	if(en_dir == TM_SERVO_Clockwise)
 	{
-		for (var = steps; var <= 180; var+=steps)
+		for (var = steps; var < 180; var+=steps)
 		{
 			TM_SERVO_SetDegrees(ServoStruct, var);
 			Delayms(20);
@@ -112,10 +112,10 @@ void SE_Servo_MotorStepsInDegrees(TM_SERVO_t* ServoStruct, float steps, TM_SERVO
 	}
 	else if(en_dir == TM_SERVO_AntiClockwise)
 	{
-		for (var = 180; var > 0; var-=steps)
+		for (var = 179; var > 0; var-=steps)
 		{
 			TM_SERVO_SetDegrees(ServoStruct, var);
-			Delayms(15);
+			Delayms(20);
 		}
 	}
 	else
@@ -123,13 +123,13 @@ void SE_Servo_MotorStepsInDegrees(TM_SERVO_t* ServoStruct, float steps, TM_SERVO
 		for (var = steps; var <= 180; var+=steps)
 		{
 			TM_SERVO_SetDegrees(ServoStruct, var);
-			Delayms(15);
+			Delayms(20);
 		}
 
 		for (var = 180; var > 0; var-=steps)
 		{
 			TM_SERVO_SetDegrees(ServoStruct, var);
-			Delayms(15);
+			Delayms(20);
 		}
 	}
 
